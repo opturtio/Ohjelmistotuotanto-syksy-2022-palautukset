@@ -34,6 +34,14 @@ class TestStatistics(unittest.TestCase):
         players = self.statistics.team("EDM")
         self.assertEqual((players[0].name, players[1].name, players[2].name), ("Semenko","Kurri","Gretzky"))
 
-    def test_module_top(self):
+    def test_module_top_basis_is_None(self):
         self.assertEqual(str(self.statistics.top(1)[0]), "Gretzky EDM 35 + 89 = 124")
-            
+
+    def test_module_top_basis_is_one(self):
+        self.assertEqual(str(self.statistics.top(1,1)[0]), "Gretzky EDM 35 + 89 = 124")
+
+    def test_module_top_basis_is_two(self):
+        self.assertEqual(str(self.statistics.top(1,2)[0]), "Lemieux PIT 45 + 54 = 99")
+        
+    def test_module_top_basis_is_three(self):
+        self.assertEqual(str(self.statistics.top(1,3)[0]), "Gretzky EDM 35 + 89 = 124")
