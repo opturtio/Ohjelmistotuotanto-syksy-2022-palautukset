@@ -89,3 +89,56 @@ class TestKauppa(unittest.TestCase):
 
         self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", ANY, 5)
 
+    def test_aloita_asiointi_nollaa_ostokset(self):
+
+        # tehdään ostokset
+        self.kauppa.lisaa_koriin(1)
+
+        # aloita asiointi
+        self.kauppa.aloita_asiointi()
+
+        # tehdään uudet ostokset
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        # tarkistetaan ettei toista ostosta näy
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", ANY, 5)
+
+    def test_pyytaa_uuden_viitenumeron_jokaiselle_maksutapahtumalle(self):
+
+        # määritellään että metodi palauttaa ensimmäisellä kutsulla 42 ja toisella 43
+        self.viitegeneraattori_mock.uusi.side_effect = [42, 43]
+
+        # tehdään uudet ostokset
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        # tarkistaa, viitenumeron oikeellisuuden
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 42, "12345", ANY, 5)
+
+        # aloita asiointi
+        self.kauppa.aloita_asiointi()
+
+        # tehdään uudet ostokset
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        # tarkistetaan ettei toista ostosta näy
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 43, "12345", ANY, 5)
+
+    def test_poista_korista(self):
+
+        # lisätään koriin
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.lisaa_koriin(2)
+
+        # poistetaan korista
+        self.kauppa.poista_korista(2)
+
+        # maksetaan ostos
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        # tarkistetaan ettei toista ostosta näy
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", ANY, 5)
+
+
