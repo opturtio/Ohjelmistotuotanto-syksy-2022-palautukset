@@ -25,15 +25,30 @@ class Ostoskori:
 
     def lisaa_tuote(self, lisattava: Tuote):
         # lisää tuotteen
-        ostos = Ostos(lisattava)
-        if ostos in self._ostokset:
-            ostos.muuta_lukumaaraa(1)
+        onko_ostos_listalla = False
+        ostos_listalla = None
+        uusi_ostos = Ostos(lisattava)
+        for ostos in self._ostokset:
+            if ostos.tuotteen_nimi() == uusi_ostos.tuotteen_nimi():
+                onko_ostos_listalla = True
+                ostos_listalla = ostos
+                break
+
+        if onko_ostos_listalla:
+            ostos_listalla.muuta_lukumaaraa(1)
         else:
-            self._ostokset.append(ostos)
+            self._ostokset.append(uusi_ostos)
 
     def poista_tuote(self, poistettava: Tuote):
         # poistaa tuotteen
-        pass
+        for ostos in self._ostokset:
+            if ostos.tuotteen_nimi() == poistettava.nimi():
+                if ostos.lukumaara() > 1:
+                    ostos.muuta_lukumaaraa(-1)
+                    print(ostos.lukumaara())
+                elif ostos.lukumaara() == 1:
+                    self._ostokset.remove(ostos)
+
 
     def tyhjenna(self):
         self._ostokset = []
