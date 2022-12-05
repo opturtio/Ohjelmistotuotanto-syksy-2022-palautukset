@@ -1,6 +1,9 @@
 from enum import Enum
 from tkinter import ttk, constants, StringVar
-
+from sovelluslogiikka import Summa
+from sovelluslogiikka import Erotus
+from sovelluslogiikka import Nollaus
+from sovelluslogiikka import Kumoa
 
 class Komento(Enum):
     SUMMA = 1
@@ -17,8 +20,8 @@ class Kayttoliittyma:
         self._komennot = {
             Komento.SUMMA: Summa(sovellus, self._lue_syote),
             Komento.EROTUS: Erotus(sovellus, self._lue_syote),
-            Komento.NOLLAUS: Nollaus(sovellus, self._lue_syote),
-            Komento.KUMOA: Kumoa(sovellus, self._lue_syote)
+            Komento.NOLLAUS: Nollaus(sovellus),
+            Komento.KUMOA: Kumoa(sovellus)
         }
 
     def kaynnista(self):
@@ -78,35 +81,3 @@ class Kayttoliittyma:
         self._syote_kentta.delete(0, constants.END)
         self._tulos_var.set(self._sovellus.palauta_tulos())
 
-
-# tein nämä aluksi omiin tiedostoihin entities kansioon mutta meni vaikeaksi ja liikaa aikaa joten jätän tähän
-
-class Summa:
-    def __init__(self, sovellus, lue_syote):
-        self.sovellus = sovellus
-        self.lue_syote = lue_syote
-
-    def suorita(self):
-        arvo=self.lue_syote()
-        self.sovellus.plus(int(arvo))
-
-class Erotus:
-    def __init__(self, sovellus, lue_syote):
-        self.sovellus = sovellus
-        self.lue_syote = lue_syote
-
-    def suorita(self):
-        arvo=self.lue_syote()
-        self.sovellus.miinus(int(arvo))
-
-class Nollaus:
-    def __init__(self, sovellus, lue_syote):
-        self.sovellus = sovellus
-
-    def suorita(self):
-        self.sovellus.nollaa()
-
-class Kumoa:
-    def __init__(self, sovellus, lue_syote):
-        self.sovellus = sovellus
-        self.lue_syote = lue_syote
